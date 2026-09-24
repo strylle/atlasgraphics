@@ -1,0 +1,8 @@
+NDefines_Graphics.NGraphics.MAP_BUILDINGS_SHRINK_DISTANCE = 180
+NDefines_Graphics.NGraphics.CITY_SPRAWL_SHRINK_DISTANCE = 220.0
+NDefines_Graphics.NGraphics.DRAW_MAP_OBJECTS_CUTOFF = 550.0
+NDefines_Graphics.NGraphics.PROVINCE_NAME_DRAW_DISTANCE = 550.0
+NDefines_Graphics.NGraphics.VICTORY_POINT_MAP_ICON_TEXT_CUTOFF = {380, 425, 450}
+NDefines_Graphics.NGraphics.CAPITAL_ICON_CUTOFF = 440
+NDefines_Graphics.NGraphics.AIRBASE_ICON_DISTANCE_CUTOFF = 300
+NDefines_Graphics.NGraphics.NAVALBASE_ICON_DISTANCE_CUTOFF = 270
