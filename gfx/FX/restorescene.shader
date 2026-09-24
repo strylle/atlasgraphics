@@ -230,16 +230,17 @@ PixelShader =
 			
 			float4 outColor = RestoreScene( saturate(color) );
 
-			float scanRow = floor( crtUV.y / InvWindowSize.y );
-			float scan = 0.5f + 0.5f * cos( scanRow * 6.2832f / OTH_SCANLINE_PERIOD );
-			outColor.rgb *= 1.0f - OTH_SCANLINE_DARKEN * scan * crtFade;
+			// fixed line count so it looks the same at any resolution, bright pixels bleed over the gaps
+			float scan = 0.5f + 0.5f * cos( crtUV.y * OTH_SCANLINE_COUNT * 6.2832f );
+			float scanLuma = dot( outColor.rgb, float3( 0.299f, 0.587f, 0.114f ) );
+			outColor.rgb *= 1.0f - OTH_SCANLINE_DARKEN * scan * ( 1.0f - scanLuma * OTH_SCANLINE_BLEED ) * crtFade;
 
 			float maskCol = mod( floor( Input.uv.x / InvWindowSize.x ), 3.0f );
 			float3 maskPick = float3( step( maskCol, 0.5f ), step( 0.5f, maskCol ) * step( maskCol, 1.5f ), step( 1.5f, maskCol ) );
 			outColor.rgb *= 1.0f - OTH_CRT_MASK * crtFade * ( 1.0f - maskPick );
 
 			float vignette = saturate( 1.0f - dot( crtCenter, crtCenter ) * OTH_CRT_VIGNETTE );
-			outColor.rgb *= lerp( 1.0f, vignette, crtFade );
+			outColor.rgb *= lerp( 1.0f, vignette * OTH_CRT_GAIN, crtFade );
 
 			return outColor;
 		}
