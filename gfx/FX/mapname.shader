@@ -37,6 +37,7 @@ VertexStruct VS_OUTPUT
     float4 vPosition : PDX_POSITION;
 	float3 vPrepos   : TEXCOORD0;
     float2 vTexCoord : TEXCOORD1;
+	float  vFontFar  : TEXCOORD2;
 };
 
 
@@ -61,6 +62,7 @@ VertexShader =
 			Out.vPosition = float4( vPos.xy, vNewZ, vPos.w );
 			Out.vPrepos = v.vPosition.xyz;
 			Out.vTexCoord = v.vTexCoord;
+			Out.vFontFar = smoothstep( OTH_MAPNAME_FONT_NEAR, OTH_MAPNAME_FONT_FAR, vCamPos.y );
 
 			return Out;
 		}
@@ -76,6 +78,9 @@ PixelShader =
 		float4 main( VS_OUTPUT v ) : PDX_COLOR
 		{
 			float4 vSample = tex2D( DiffuseTexture, v.vTexCoord );
+			// zoomed out swaps to the second face packed under the first
+			float4 vFar = tex2D( DiffuseTexture, float2( v.vTexCoord.x * 0.5f, OTH_MAPNAME_FAR_V + v.vTexCoord.y * 0.5f ) );
+			vSample = lerp( vSample, vFar, v.vFontFar );
 			vSample.a *= Transp_OffsetX.x;// * vFade;
 			vSample.rgb *= 1.0f - ( DayNightFactor( CalcGlobeNormal( v.vPrepos.xz ) ) * 0.35f );
 			return vSample;
